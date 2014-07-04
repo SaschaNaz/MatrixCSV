@@ -1,4 +1,4 @@
-﻿module CSV {
+﻿module MatrixCSV {
     interface CSVLine {
         line: string;
         nextPosition: number;
@@ -6,7 +6,7 @@
     export function readFile(file: Blob, onload: (matrix: Matrix<string>) => any, delimiter = ',') {
         var reader = new FileReader();
         reader.onload = (ev: Event) => {
-            onload(CSV.decode(<string>(<FileReader>ev.target).result, delimiter));
+            onload(MatrixCSV.decode(<string>(<FileReader>ev.target).result, delimiter));
         };
         reader.readAsText(file);
     }

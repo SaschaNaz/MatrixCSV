@@ -1,14 +1,14 @@
-﻿var CSV;
-(function (CSV) {
+﻿var MatrixCSV;
+(function (MatrixCSV) {
     function readFile(file, onload, delimiter) {
         if (typeof delimiter === "undefined") { delimiter = ','; }
         var reader = new FileReader();
         reader.onload = function (ev) {
-            onload(CSV.decode(ev.target.result, delimiter));
+            onload(MatrixCSV.decode(ev.target.result, delimiter));
         };
         reader.readAsText(file);
     }
-    CSV.readFile = readFile;
+    MatrixCSV.readFile = readFile;
     function decode(text, delimiter) {
         if (typeof delimiter === "undefined") { delimiter = ','; }
         var matrix = new Matrix();
@@ -28,7 +28,7 @@
         }
         return matrix;
     }
-    CSV.decode = decode;
+    MatrixCSV.decode = decode;
     function readLine(str, startIndex) {
         var found = str.indexOf('\n', startIndex);
         if (found != -1)
@@ -98,9 +98,9 @@
         });
         return result;
     }
-    CSV.encode = encode;
+    MatrixCSV.encode = encode;
     function escape(input) {
         return '"' + input.replace(/\"/g, '""') + '"';
     }
-})(CSV || (CSV = {}));
+})(MatrixCSV || (MatrixCSV = {}));
 //# sourceMappingURL=matrixcsv.js.map
