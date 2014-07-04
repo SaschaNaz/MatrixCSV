@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="sources\csv.ts" />
+    <TypeScriptCompile Include="submodules\mathextension\mathextension.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <None Include="web.Debug.config">
