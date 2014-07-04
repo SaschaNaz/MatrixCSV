@@ -1,0 +1,3 @@
+[submodule "submodules/mathextension"]
+	path = submodules/mathextension
+	url = https://github.com/SaschaNaz/MathExtension.git
