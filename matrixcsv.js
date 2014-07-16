@@ -20,7 +20,11 @@
                 break;
             currentPosition = lineObject.nextPosition;
 
-            var splitted = splitByDelimiter(lineObject.line, delimiter);
+            try  {
+                var splitted = splitByDelimiter(lineObject.line, delimiter);
+            } catch (e) {
+                throw new Error("CSV Error: Line " + linePosition + ", " + e.message);
+            }
             for (var i = 1; i <= splitted.length; i++) {
                 matrix.set([linePosition, i], splitted[i - 1]);
             }
@@ -67,11 +71,12 @@
                         mayQuoteEnd = false;
                 }
             } else if (mayQuoteEnd)
-                mayQuoteEnd = false;
+                throw new Error("column " + (i + 1) + ": quote is incorrectly ended.");
 
             item += char;
         }
 
+        items.push(item);
         return items;
     }
 
