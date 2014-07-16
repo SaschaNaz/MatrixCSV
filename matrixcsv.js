@@ -34,11 +34,13 @@
     }
     MatrixCSV.decode = decode;
     function readLine(str, startIndex) {
-        var found = str.indexOf('\n', startIndex);
-        if (found != -1)
-            return { line: str.slice(startIndex, found), nextPosition: found + 1 };
-        else
-            return { line: str.slice(startIndex), nextPosition: str.length };
+        var firstcut = str.slice(startIndex);
+        var found = firstcut.search(/[\r\n]/);
+        if (found != -1) {
+            var length = firstcut.slice(found).match(/[\r\n]+/)[0].length;
+            return { line: firstcut.slice(0, found), nextPosition: startIndex + found + length };
+        } else
+            return { line: firstcut, nextPosition: str.length };
     }
     function splitByDelimiter(str, delimiter) {
         var isInQuote = false;
