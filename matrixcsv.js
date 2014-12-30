@@ -1,12 +1,14 @@
 var MatrixCSV;
 (function (MatrixCSV) {
-    function readFile(file, onload, delimiter) {
+    function readFile(file, delimiter) {
         if (delimiter === void 0) { delimiter = ','; }
-        var reader = new FileReader();
-        reader.onload = function (ev) {
-            onload(MatrixCSV.decode(ev.target.result, delimiter));
-        };
-        reader.readAsText(file);
+        return new Promise(function (resolve, reject) {
+            var reader = new FileReader();
+            reader.onload = function (ev) {
+                resolve(MatrixCSV.decode(ev.target.result, delimiter));
+            };
+            reader.readAsText(file);
+        });
     }
     MatrixCSV.readFile = readFile;
     function decode(text, delimiter) {

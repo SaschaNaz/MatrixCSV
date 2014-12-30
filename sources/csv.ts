@@ -3,12 +3,14 @@
         line: string;
         nextPosition: number;
     }
-    export function readFile(file: Blob, onload: (matrix: Matrix<string>) => any, delimiter = ',') {
-        var reader = new FileReader();
-        reader.onload = (ev: Event) => {
-            onload(MatrixCSV.decode(<string>(<FileReader>ev.target).result, delimiter));
-        };
-        reader.readAsText(file);
+    export function readFile(file: Blob, delimiter = ',') {
+        return new Promise<Matrix<string>>((resolve, reject) => {
+            var reader = new FileReader();
+            reader.onload = (ev: Event) => {
+                resolve(MatrixCSV.decode(<string>(<FileReader>ev.target).result, delimiter));
+            };
+            reader.readAsText(file);
+        });
     }
     export function decode(text: string, delimiter = ',') {
         var matrix = new Matrix<string>();
