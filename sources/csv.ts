@@ -121,6 +121,6 @@
         return result;
     }
     function escape(input: string) {
-        return '"' + input.replace(/\"/g, '""') + '"';
+        return `"${input.replace(/\"/g, '""')}"`;
     }
 }
