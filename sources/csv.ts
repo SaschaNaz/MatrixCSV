@@ -5,7 +5,7 @@
     }
     export function readFile(file: Blob, delimiter = ',') {
         return new Promise<Matrix<string>>((resolve, reject) => {
-            var reader = new FileReader();
+            const reader = new FileReader();
             reader.onload = (ev: Event) => {
                 resolve(MatrixCSV.decode(<string>(<FileReader>ev.target).result, delimiter));
             };
@@ -13,22 +13,24 @@
         });
     }
     export function decode(text: string, delimiter = ',') {
-        var matrix = new Matrix<string>();
-        var currentPosition = 0;
-        var linePosition = 1;
+        const matrix = new Matrix<string>();
+        let currentPosition = 0;
+        let linePosition = 1;
         while (currentPosition < text.length) {
-            var lineObject = readLine(text, currentPosition);
-            if (!lineObject)
+            const  lineObject = readLine(text, currentPosition);
+            if (!lineObject) {
                 break;
+            }
             currentPosition = lineObject.nextPosition;
-
+            
+            let splitted: string[];
             try {
-                var splitted = splitByDelimiter(lineObject.line, delimiter);//lineObject.line.split(delimiter);
+                splitted = splitByDelimiter(lineObject.line, delimiter);//lineObject.line.split(delimiter);
             }
             catch (e) {
                 throw new Error("CSV Error: Line " + linePosition + ", " + (<Error>e).message);
             }
-            for (var i = 1; i <= splitted.length; i++) {
+            for (let i = 1; i <= splitted.length; i++) {
                 matrix.set([linePosition, i], splitted[i - 1]);
             }
             linePosition++;
@@ -36,23 +38,23 @@
         return matrix;
     }
     function readLine(str: string, startIndex: number) {
-        var firstcut = str.slice(startIndex);
-        var found = firstcut.search(/[\r\n]/);
+        const firstcut = str.slice(startIndex);
+        const found = firstcut.search(/[\r\n]/);
         if (found != -1) {
-            var length = firstcut.slice(found).match(/[\r\n]+/)[0].length;
+            const length = firstcut.slice(found).match(/[\r\n]+/)[0].length;
             return { line: firstcut.slice(0, found), nextPosition: startIndex + found + length };
         }
         else
             return { line: firstcut, nextPosition: str.length };
     }
     function splitByDelimiter(str: string, delimiter: string) {
-        var isInQuote = false;
-        var items: string[] = [];
-        var item = "";
-        var mayQuoteEnd = false;//just met a quotation mark in a quote
+        let isInQuote = false;
+        const items: string[] = [];
+        let item = "";
+        let mayQuoteEnd = false;//just met a quotation mark in a quote
 
-        for (var i = 0; i < str.length; i++) {
-            var char = str[i];
+        for (let i = 0; i < str.length; i++) {
+            const char = str[i];
 
             //delimiter
             if (char === delimiter && !(isInQuote && !mayQuoteEnd)) {
@@ -74,12 +76,14 @@
                         mayQuoteEnd = true;
                         continue;
                     }
-                    else
+                    else {
                         mayQuoteEnd = false;
+                    }
                 }
             }
-            else if (mayQuoteEnd)
-                throw new Error("column " + (i + 1) + ": quote is incorrectly ended.");
+            else if (mayQuoteEnd) {
+                throw new Error(`"column (${i + 1}): quote is incorrectly ended.`);
+            }
 
             item += char;
         }
@@ -89,10 +93,11 @@
     }
 
     export function encode(matrix: Matrix<any>) {
-        var result = "";
-        var line = 1;
-        if (matrix.dimension != 2)
+        let result = "";
+        let line = 1;
+        if (matrix.dimension != 2) {
             throw new Error("Matrix should be 2-dimensional to be saved as CSV.");
+        }
         matrix.forEach((item, coordinate) => {
             if (coordinate[0] != line) {
                 result += "\r\n";
@@ -102,13 +107,16 @@
                 result += ',';
             }
 
-            if (item === undefined)
+            if (item === undefined) {
                 return;
+            }
             item = "" + item;
-            if ((<string>item).match(/[,\"]/))
+            if ((<string>item).match(/[,\"]/)) {
                 result += escape(item);
-            else
+            }
+            else {
                 result += item;
+            }
         });
         return result;
     }
