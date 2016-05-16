@@ -8,7 +8,7 @@
         "out": "built/matrixcsv.js"
     },
     "files": [
-        "submodules/mathextension/mathextension.d.ts",
+        "submodules/snmath/lib/snmath.d.ts",
         "sources/csv.ts"
     ]
 }

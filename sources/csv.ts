@@ -1,4 +1,6 @@
 ﻿module MatrixCSV {
+    import Matrix = SNMath.Matrix;
+    
     interface CSVLine {
         line: string;
         nextPosition: number;
