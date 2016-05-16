@@ -1,1 +1,3 @@
 built/
+playground/*.js
+playground/*.js.map
