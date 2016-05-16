@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "noImplicitAny": true,
+        "sourceMap": true,
+        "declaration": true,
+        "stripInternal": true,
+        "out": "built/matrixcsv.js"
+    },
+    "files": [
+        "submodules/mathextension/mathextension.d.ts",
+        "sources/csv.ts"
+    ]
+}

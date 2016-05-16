@@ -1,18 +1,16 @@
 var MatrixCSV;
 (function (MatrixCSV) {
-    function readFile(file, delimiter) {
-        if (delimiter === void 0) { delimiter = ','; }
-        return new Promise(function (resolve, reject) {
+    function readFile(file, delimiter = ',') {
+        return new Promise((resolve, reject) => {
             var reader = new FileReader();
-            reader.onload = function (ev) {
+            reader.onload = (ev) => {
                 resolve(MatrixCSV.decode(ev.target.result, delimiter));
             };
             reader.readAsText(file);
         });
     }
     MatrixCSV.readFile = readFile;
-    function decode(text, delimiter) {
-        if (delimiter === void 0) { delimiter = ','; }
+    function decode(text, delimiter = ',') {
         var matrix = new Matrix();
         var currentPosition = 0;
         var linePosition = 1;
@@ -87,7 +85,7 @@ var MatrixCSV;
         var line = 1;
         if (matrix.dimension != 2)
             throw new Error("Matrix should be 2-dimensional to be saved as CSV.");
-        matrix.forEach(function (item, coordinate) {
+        matrix.forEach((item, coordinate) => {
             if (coordinate[0] != line) {
                 result += "\r\n";
                 line++;
