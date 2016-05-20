@@ -1,4 +1,4 @@
-﻿module MatrixCSV {
+﻿namespace MatrixCSV {
     import Matrix = SNMath.Matrix;
     
     interface CSVLine {
