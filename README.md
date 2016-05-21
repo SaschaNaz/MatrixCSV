@@ -1,7 +1,7 @@
 MatrixCSV
 =========
 
-JavaScript CSV tool based on Matrix from [MathExtension](https://github.com/SaschaNaz/MathExtension)
+JavaScript CSV tool based on [SNMath.Matrix](https://github.com/SaschaNaz/SNMath)
 
 ### API
 

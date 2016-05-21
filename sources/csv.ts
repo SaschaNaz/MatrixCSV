@@ -1,4 +1,4 @@
-﻿module MatrixCSV {
+﻿namespace MatrixCSV {
     import Matrix = SNMath.Matrix;
     
     interface CSVLine {
@@ -19,7 +19,7 @@
         let currentPosition = 0;
         let linePosition = 1;
         while (currentPosition < text.length) {
-            const  lineObject = readLine(text, currentPosition);
+            const lineObject = readLine(text, currentPosition);
             if (!lineObject) {
                 break;
             }
@@ -69,11 +69,7 @@
 
             //quote escaping
             if (char === '"') {
-                if (item.length == 0) {
-                    isInQuote = true;
-                    continue;
-                }
-                else if (isInQuote) {//already quoted
+                if (isInQuote) { // already quoted
                     if (!mayQuoteEnd) {
                         mayQuoteEnd = true;
                         continue;
@@ -82,9 +78,16 @@
                         mayQuoteEnd = false;
                     }
                 }
+                else if (item.length != 0) { // mark occured within item
+                    throw new Error(`"column (${i}): double quotation mark occured without cell quotation.`);
+                }
+                else {
+                    isInQuote = true;
+                    continue;
+                }
             }
             else if (mayQuoteEnd) {
-                throw new Error(`"column (${i + 1}): quote is incorrectly ended.`);
+                throw new Error(`"column (${i}): quote is incorrectly ended.`);
             }
 
             item += char;
