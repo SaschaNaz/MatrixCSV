@@ -8,7 +8,7 @@
     export function readFile(file: Blob, delimiter = ',') {
         return new Promise<Matrix<string>>((resolve, reject) => {
             const reader = new FileReader();
-            reader.onload = (ev: Event) => {
+            reader.onload = ev => {
                 resolve(MatrixCSV.decode(<string>(<FileReader>ev.target).result, delimiter));
             };
             reader.readAsText(file);
@@ -18,6 +18,8 @@
         const matrix = new Matrix<string>();
         let currentPosition = 0;
         let linePosition = 1;
+        let hasUnclosedQuote = false;
+        const items: string[] = [];
         while (currentPosition < text.length) {
             const lineObject = readLine(text, currentPosition);
             if (!lineObject) {
@@ -25,17 +27,24 @@
             }
             currentPosition = lineObject.nextPosition;
             
-            let splitted: string[];
             try {
-                splitted = splitByDelimiter(lineObject.line, delimiter);//lineObject.line.split(delimiter);
+                const result = splitByDelimiter(lineObject.line, delimiter, hasUnclosedQuote);
+                if (hasUnclosedQuote) {
+                    items[items.length - 1] = `${items[items.length - 1]}\n${result.items.shift()}`;
+                }
+                items.push(...result.items);
+                hasUnclosedQuote = result.hasUnclosedQuote;
             }
             catch (e) {
                 throw new Error("CSV Error: Line " + linePosition + ", " + (<Error>e).message);
             }
-            for (let i = 1; i <= splitted.length; i++) {
-                matrix.set([linePosition, i], splitted[i - 1]);
+            if (!hasUnclosedQuote) {
+                for (let i = 1; i <= items.length; i++) {
+                    matrix.set([linePosition, i], items[i - 1]);
+                }
+                linePosition++;
+                items.length = 0;
             }
-            linePosition++;
         }
         return matrix;
     }
@@ -49,8 +58,7 @@
         else
             return { line: firstcut, nextPosition: str.length };
     }
-    function splitByDelimiter(str: string, delimiter: string) {
-        let isInQuote = false;
+    function splitByDelimiter(str: string, delimiter: string, isInQuote = false) {
         const items: string[] = [];
         let item = "";
         let mayQuoteEnd = false;//just met a quotation mark in a quote
@@ -79,7 +87,7 @@
                     }
                 }
                 else if (item.length != 0) { // mark occured within item
-                    throw new Error(`"column (${i}): double quotation mark occured without cell quotation.`);
+                    throw new Error(`column (${i}): double quotation mark occured without cell quotation.`);
                 }
                 else {
                     isInQuote = true;
@@ -87,14 +95,14 @@
                 }
             }
             else if (mayQuoteEnd) {
-                throw new Error(`"column (${i}): quote is incorrectly ended.`);
+                throw new Error(`column (${i}): quote is incorrectly ended.`);
             }
 
             item += char;
         }
 
         items.push(item);
-        return items;
+        return { items, hasUnclosedQuote: isInQuote && !mayQuoteEnd };
     }
 
     export function encode(matrix: Matrix<any>) {
@@ -116,7 +124,7 @@
                 return;
             }
             item = "" + item;
-            if ((<string>item).match(/[,\"]/)) {
+            if ((<string>item).match(/[,\"\r\n]/)) {
                 result += escape(item);
             }
             else {
